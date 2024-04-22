@@ -10,6 +10,7 @@ class MealsDatilsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isFavorites = ref.watch(favoritesMealsProvider).contains(meal);
     return Scaffold(
       appBar: AppBar(
         title: Text(meal.title),
@@ -24,7 +25,7 @@ class MealsDatilsScreen extends ConsumerWidget {
                   content:
                       Text(wasAdd ? ' meals add as fav' : 'meals removed ')));
             },
-            icon: const Icon(Icons.star),
+            icon: Icon(isFavorites ? Icons.star : Icons.star_border),
           )
         ],
       ),
