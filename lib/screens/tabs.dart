@@ -6,6 +6,7 @@ import 'package:my_app/screens/filters.dart';
 import 'package:my_app/screens/meals.dart';
 import 'package:my_app/widgets/main_drawer.dart';
 import 'package:my_app/provider/favorites_provider.dart';
+import 'package:my_app/provider/filters_provider.dart';
 
 const kInitialFilters = {
   Filter.gluttenfree: false,
@@ -23,8 +24,6 @@ class TabsSreen extends ConsumerStatefulWidget {
 }
 
 class _TabsSreenState extends ConsumerState<TabsSreen> {
-  Map<Filter, bool> _selectedFilter = kInitialFilters;
-
   int _selectedPageIndex = 0;
   void _selectPage(index) {
     setState(() {
@@ -36,31 +35,26 @@ class _TabsSreenState extends ConsumerState<TabsSreen> {
     Navigator.of(context).pop();
 
     if (identifier == 'filters') {
-      final result =
-          await Navigator.of(context).push<Map<Filter, bool>>(MaterialPageRoute(
-              builder: (ctx) => FiltersScreen(
-                    currentFilter: _selectedFilter,
-                  )));
-      setState(() {
-        _selectedFilter = result ?? _selectedFilter;
-      });
+      await Navigator.of(context).push<Map<Filter, bool>>(
+          MaterialPageRoute(builder: (ctx) => const FiltersScreen()));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final meals = ref.watch(mealsProvider);
+    final avtiveFilters = ref.watch(filtersProvider);
     final availableMeals = meals.where((meal) {
-      if (_selectedFilter[Filter.gluttenfree]! && !meal.isGlutenFree) {
+      if (avtiveFilters[Filter.gluttenfree]! && !meal.isGlutenFree) {
         return false;
       }
-      if (_selectedFilter[Filter.lactosefree]! && !meal.isLactoseFree) {
+      if (avtiveFilters[Filter.lactosefree]! && !meal.isLactoseFree) {
         return false;
       }
-      if (_selectedFilter[Filter.vegan]! && !meal.isVegan) {
+      if (avtiveFilters[Filter.vegan]! && !meal.isVegan) {
         return false;
       }
-      if (_selectedFilter[Filter.vegetarian]! && !meal.isVegetarian) {
+      if (avtiveFilters[Filter.vegetarian]! && !meal.isVegetarian) {
         return false;
       }
       return true;
